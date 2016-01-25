@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Calculator</title>
+  </head>
+  <body>
+    <canvas id="graphing" width="400" height="400"></canvas>
+    <form onsubmit="addLine()" action="#">
+      <input type="text" placeholder="equation" id="equation">
+      <input type="color" id="color">
+      <input type="submit" value="submit">
+    </form>
+    <div id='lines'>
+      
+    </div>
+    <script src="math.min.js"></script>
+    <script src="graphing.js"></script>
+    <script src="calculator.js"></script>
+  </body>
+</html>
