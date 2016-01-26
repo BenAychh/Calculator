@@ -3,19 +3,40 @@
   <head>
     <meta charset="utf-8">
     <title>Calculator</title>
+    <link rel="stylesheet" type="text/css" href="style/main.css">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [["$","$"],["`","`"]]
+        }
+      });
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full">
+    </script>
+    <script type="text/javascript" src="beautifyinput.js"></script>
   </head>
   <body>
-    <canvas id="graphing" width="400" height="400"></canvas>
-    <form onsubmit="addLine()" action="#">
-      <input type="text" placeholder="equation" id="equation">
-      <input type="color" id="color">
+    <div class="graphCanvases">
+      <canvas id="graphing" width="400" height="400"></canvas>
+      <canvas id="info" width="400" height="400"></canvas>
+    </div>
+    <form onsubmit="calculate()" action="#">
+      <div id="result" class="output"></div>
+      <div id="buffer" class="output"></div>
+      <input type="text" placeholder="equation" id="expression" onkeyup="beautifyInput(this.value)">
       <input type="submit" value="submit">
     </form>
-    <div id='lines'>
-      
+    <div id="lines">
+
     </div>
+
+    <script>
+      Preview.initialize();
+    </script>
     <script src="math.min.js"></script>
     <script src="graphing.js"></script>
+    <script src="info.js"></script>
     <script src="calculator.js"></script>
   </body>
 </html>

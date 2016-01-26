@@ -41,7 +41,6 @@ function Graphing(pCanvas) {
     graphLines();
   }
   this.removeLine = function(equation) {
-    console.log('being called');
     delete lines[equation];
     var context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
