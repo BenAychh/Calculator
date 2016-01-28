@@ -18,10 +18,10 @@ function Info(pCanvas) {
     delete balls[equation];
   };
   this.mouseLocation = function(x) {
+    clearText();
     clearBalls();
     setBalls(x);
     drawBalls();
-    clearText();
     setText(x);
   };
   canvas.addEventListener('mousemove', function(e) {
@@ -42,7 +42,7 @@ function Info(pCanvas) {
       context.fillStyle = lines[line];
       var yNumber = math.eval(line, {x: xNumber});
       context.fillText('f(' + math.round(xNumber, 2) + ')', 10, top + 30 * key - 10);
-      context.fillText('= ' + math.round(yNumber), 60, top + 30 * key - 10);
+      context.fillText('= ' + math.round(yNumber, 2), 80, top + 30 * key - 10);
     });
   }
   function setBalls(x) {
@@ -73,18 +73,12 @@ function Info(pCanvas) {
     });
   }
   function convertHNumberToPixel(number) {
-    if (number < xmin || number > xmax) {
-      return undefined;
-    }
     return Math.round((number - xmin) / (xmax - xmin) * canvas.width);
   }
   function convertHPixelToNumber(pixel) {
     return ((xmax - xmin) / canvas.width * pixel) + xmin;
   }
   function convertVNumberToPixel(number) {
-    if (number < ymin || number > ymax) {
-      return undefined;
-    }
     return Math.round((1 - (number - ymin) / (ymax - ymin)) * canvas.height);
   }
   function convertVPixelToNumber(pixel) {
