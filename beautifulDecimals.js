@@ -1,5 +1,3 @@
-var Fraction = require('./fraction');
-
 function Beautify(number) {
   var sign = '';
   if (number < 0) {
@@ -32,13 +30,13 @@ function Beautify(number) {
   this.toString = function() {
     if (!squared && !pi) {
       if (fraction.d === 1) {
-        return fraction.n;
+        return sign + fraction.n;
       } else {
         return fraction.n + " / " + fraction.d;
       }
     }
     if (nothing) {
-      return num;
+      return sign + num;
     }
     if (pi) {
       return sign + num;
@@ -52,9 +50,16 @@ function Beautify(number) {
         }
         numS += numS + 'sqrt(' + Math.round(Math.pow(den, 2)) + ')';
         denS = Math.round(Math.pow(den, 2));
+      } else {
+        denS = den;
       }
-      return sign + numS + " / " + denS;
+      console.log(den);
+      if (den != 1) {
+        return sign + numS + " / " + denS;
+      }
+      else {
+        return sign + numS;
+      }
     }
   };
 }
-module.exports = Beautify;
