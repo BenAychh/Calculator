@@ -37,40 +37,25 @@ function Graphing(pCanvas) {
     }
   }
   this.addLine = function(equation, color) {
+    equation = equation.replace(/\s/, '');
     lines[equation] = color;
     graphLines();
-  }
+  };
   this.removeLine = function(equation) {
+    equation = equation.replace(/\s/, '');
     delete lines[equation];
     var context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
     graphLines();
-  }
+  };
   function graphLines() {
     var context = canvas.getContext('2d');
-    //var canvasData = context.getImageData(0, 0, canvas.width, canvas.height);
     var linesToGraph = Object.keys(lines);
-    /*linesToGraph.forEach(function(equation) {
-      var red = parseInt(lines[equation].substring(1, 3), 16);
-      var green = parseInt(lines[equation].substring(3, 5), 16);
-      var blue = parseInt(lines[equation].substring(5, 7), 16);
-      console.log(red, green, blue);
-      for (x = 0; x < canvas.width; x++) {
-        var numberX = convertHPixelToNumber(x);
-        var numberY = math.eval(equation, {x: numberX});
-        var y = convertVNumberToPixel(numberY);
-        console.log(x, y);
-        var index = (x + y * canvas.width) * 4;
-        canvasData.data[index + 0] = red;
-        canvasData.data[index + 1] = green;
-        canvasData.data[index + 2] = blue;
-      }
-    });
-    context.putImageData(canvasData, 0, 0); */
     linesToGraph.forEach(function(equation) {
       var color = lines[equation];
       context.strokeStyle = color;
+      context.lineWidth = 3;
       context.beginPath();
       var started = false;
       for(xPixel = 1; xPixel < canvas.width; xPixel++ ){
@@ -90,18 +75,12 @@ function Graphing(pCanvas) {
     });
   }
   function convertHNumberToPixel(number) {
-    if (number < xmin || number > xmax) {
-      return undefined;
-    }
     return Math.round((number - xmin) / (xmax - xmin) * canvas.width);
   }
   function convertHPixelToNumber(pixel) {
     return ((xmax - xmin) / canvas.width * pixel) + xmin;
   }
   function convertVNumberToPixel(number) {
-    if (number < ymin || number > ymax) {
-      return undefined;
-    }
     return Math.round((1 - (number - ymin) / (ymax - ymin)) * canvas.height);
   }
   function convertVPixelToNumber(pixel) {
