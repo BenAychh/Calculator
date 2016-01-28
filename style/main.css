@@ -11,10 +11,12 @@ form input[type='text'] {
   font-size: 24px;
   width: 400px;
   display: block;
+  margin: 10px;
 }
 form .output {
   width: 400px;
   height: 100px;
+  padding: 10px;
   border: 1px solid black;
   text-align: center;
   font-size: 24px;
