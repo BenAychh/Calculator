@@ -8,14 +8,14 @@ function Info(pCanvas) {
   var ymax = 10;
   var lines = {};
   var balls = {};
-  this.addLine = function(equation, color) {
-    lines[equation] = color;
+  this.addLine = function(name, equation, color) {
+    lines[name] = {equation: equation, color: color};
   };
-  this.removeLine = function(equation) {
+  this.removeLine = function(name) {
     clearBalls();
     clearText();
-    delete lines[equation];
-    delete balls[equation];
+    delete lines[name];
+    delete balls[name];
   };
   this.mouseLocation = function(x) {
     clearText();
@@ -37,10 +37,10 @@ function Info(pCanvas) {
     var lineKeys = Object.keys(lines);
     var top = canvas.height - 30 * (lineKeys.length - 1);
     var xNumber = convertHPixelToNumber(x);
-    lineKeys.forEach(function(line, key) {
+    lineKeys.forEach(function(info, key) {
       context.font = '20px calibri';
-      context.fillStyle = lines[line];
-      var yNumber = math.eval(line, {x: xNumber});
+      context.fillStyle = lines[info].color;
+      var yNumber = math.eval(lines[info].equation, {x: xNumber});
       context.fillText('f(' + math.round(xNumber, 2) + ')', 10, top + 30 * key - 10);
       context.fillText('= ' + math.round(yNumber, 2), 80, top + 30 * key - 10);
     });
@@ -49,7 +49,7 @@ function Info(pCanvas) {
     var lineKeys = Object.keys(lines);
     lineKeys.forEach(function(key) {
       var xNumber = convertHPixelToNumber(x);
-      var yNumber = math.eval(key, {x: xNumber});
+      var yNumber = math.eval(lines[key].equation, {x: xNumber});
       var y = convertVNumberToPixel(yNumber);
       balls[key] = {x: x, y: y};
     });
@@ -60,7 +60,7 @@ function Info(pCanvas) {
     ballKeys.forEach(function(key) {
       context.beginPath();
       context.arc(balls[key].x, balls[key].y, ballRadius, 0, 2 * Math.PI, false);
-      context.fillStyle = lines[key];
+      context.fillStyle = lines[key].color;
       context.fill();
     });
   }

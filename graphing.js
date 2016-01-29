@@ -12,6 +12,7 @@ function Graphing(pCanvas) {
     var vgrid = 1;
     var context = canvas.getContext('2d');
     context.strokeStyle = '#adadad';
+    context.lineWidth = 1;
     for (i = xmin + hgrid; i < xmax; i += hgrid) {
       var xNumber = convertHNumberToPixel(i);
       context.beginPath();
@@ -36,14 +37,13 @@ function Graphing(pCanvas) {
       context.fillRect(0, vzero - 1, canvas.width, 3);
     }
   }
-  this.addLine = function(equation, color) {
+  this.addLine = function(name, equation, color) {
     equation = equation.replace(/\s/, '');
-    lines[equation] = color;
+    lines[name] = {equation: equation, color: color};
     graphLines();
   };
-  this.removeLine = function(equation) {
-    equation = equation.replace(/\s/, '');
-    delete lines[equation];
+  this.removeLine = function(name) {
+    delete lines[name];
     var context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
@@ -52,15 +52,15 @@ function Graphing(pCanvas) {
   function graphLines() {
     var context = canvas.getContext('2d');
     var linesToGraph = Object.keys(lines);
-    linesToGraph.forEach(function(equation) {
-      var color = lines[equation];
+    linesToGraph.forEach(function(name) {
+      var color = lines[name].color;
       context.strokeStyle = color;
       context.lineWidth = 3;
       context.beginPath();
       var started = false;
       for(xPixel = 1; xPixel < canvas.width; xPixel++ ){
         xNumber = convertHPixelToNumber(xPixel);
-        yNumber = math.eval(equation, {x: xNumber});
+        yNumber = math.eval(lines[name].equation, {x: xNumber});
         yPixel = convertVNumberToPixel(yNumber);
         if (yPixel ) {
           if (started) {

@@ -10,46 +10,17 @@ var functions = {};
 var colors = ['#0000ff', '#009900', '#990099', '#9fa700', '#e8184b'];
 
 /**
- * addLine - Adds a line to our graphing canvas and our info canvas
- *
- * @param  {string} expression should be of the form: graph(f(x):2x, #00ff00)
- *                  Although any HTML color descriptor should work.
- * @return {undefined}
- */
-function addLine(expression) {
-  //Gets the graphing information from the expression passsed
-  var graphIndex = expression.indexOf('graph');
-  // This starts the info after the :=
-  var fStartIndex = expression.indexOf('(', removegraphIndex) + 1;
-  // We use a comma to separate expressoins and colors
-  var fEndIndex = expression.indexOf(',', fStartIndex);
-  // Gets the equation to be graphed (without spaces)
-  var functionToGraph =
-      expression.substring(fStartIndex, fEndIndex).replace(/\s/, '');
-  // The first digit after the comma
-  var cStartIndex = fEndIndex + 1;
-  // The end of the color being used.
-  var cEndIndex = expression.lastIndexOf(')');
-  // Extract the color
-  var color = expression.substring(cStartIndex, cEndIndex);
-  // Drop the spaces.
-  color = color.replace(/\s/, '');
-  // Now that we have all of the information, add it to the canvases
-  grapher.addLine(equation, color);
-  infoer.addLine(equation, color);
-}
-
-/**
  * addLine - Much simpler version of the above where the values are already
  * split.
- *
+ * @param  {string} the name of our function 'f(x), etc'
  * @param  {string} equation the equation to be graphed.
  * @param  {string} color    any html-compliant color descriptor.
  * @return {undefined}          description
  */
-function addLine(equation, color) {
-  grapher.addLine(equation, color);
-  infoer.addLine(equation, color);
+function addLine(name, equation, color) {
+  grapher.addLine(name, equation, color);
+  infoer.addLine(name, equation, color);
+  return
 }
 
 /**
@@ -62,17 +33,12 @@ function removeLine(expression) {
   // If we don't have the command removegraph being passed then we
   // can assume we are getting the equation directly.
   var removegraphIndex = expression.indexOf('removegraph');
-  if (removegraphIndex !== -1) {
-    grapher.removeLine(expression);
-    infoer.removeLine(expression);
-    return;
-  }
-  // Otherwise we need to extract the expression.
   var frStartIndex = expression.indexOf('(', removegraphIndex) + 1;
   var frEndIndex = expression.lastIndexOf(')');
   var functionToRemove = expression.substring(frStartIndex, frEndIndex);
   grapher.removeLine(functionToRemove);
   infoer.removeLine(functionToRemove);
+  return functionToRemove;
 }
 
 /**
@@ -157,10 +123,7 @@ function clean(input) {
 function evaluateFunctionsAtSpecificValues(expression) {
   // Searches for 'f(2' where f is any lettter and 2 is anything except x;
   var functionStrings = expression.match(/\b[a-z]\((?!x)/g);
-  console.log('functionStrings: ', functionStrings);
-  console.log('strings: ', functionStrings);
   var specificFunctionString = functionStrings[functionStrings.length - 1];
-  console.log("spec func string: ", specificFunctionString);
   // Gets the start of the first function it finds. This probably needs to
   // work backwards in order to support nested functions.
   var specificFunctionStringStart =
@@ -242,12 +205,7 @@ function replaceFunctions(input) {
 function specialProcessor(expression) {
   // If the user is removing a function.
   if (expression.indexOf('removegraph') !== -1) {
-    removeLine(expression);
-    return 'removed ' + expression;
-  // If a user is adding a function.
-  } else if (expression.indexOf('graph') !== -1) {
-    addLine(expression);
-    return 'graphed ' + expression;
+    return 'removed: ' + removeLine(expression);
   // If the user is defining a function.
   } else if (expression.indexOf(':=') !== -1) {
     // What color are we on?
@@ -257,8 +215,8 @@ function specialProcessor(expression) {
     info = expression.split(':=');
     // Add the function to our global map and graph it.
     functions[info[0]] = info[1];
-    addLine(functions[info[0]], color);
-    return 'defined function ' + info[0];
+    addLine(info[0], functions[info[0]], color);
+    return 'defined function ' + info[0] + ' := ' + functions[info[0]];
   }
   return '';
 }
