@@ -71,7 +71,8 @@ function calculate() {
     // Create a beauty object to process the output.
     var beauty = new Beautify(simpleEvaluation);
     // This means that there is a way to beautify the number.
-    if (beauty.toString() != simpleEvaluation) {
+    if (math.abs(beauty.toString() - simpleEvaluation) > 0.00000000001 ||
+        isNaN(math.abs(beauty.toString() - simpleEvaluation))) {
       // Put both the beautified math and the decimal in the hidden div.
       precalculated.innerHTML = '`' + beauty.toString() + " = " +
           math.round(simpleEvaluation, 10) + '`';
@@ -83,7 +84,7 @@ function calculate() {
       });
     } else {
       // Number can't be beautified, just display it.
-      calculated.innerHTML = simpleEvaluation;
+      calculated.innerHTML = beauty.toString();
     }
   } else {
     // Something special happen, display what we did.
