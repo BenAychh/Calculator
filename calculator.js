@@ -13,6 +13,7 @@ var colors = ['#0000ff', '#009900', '#990099', '#9fa700', '#e8184b'];
  * addLine - Adds a line to our graphing canvas and our info canvas
  *
  * @param  {string} expression should be of the form: graph(f(x):2x, #00ff00)
+ *                  Although any HTML color descriptor should work.
  * @return {undefined}
  */
 function addLine(expression) {
@@ -83,11 +84,11 @@ function removeLine(expression) {
 function calculate() {
   // Grab the input.
   var input = document.getElementById('expression');
-  var inputValue = input.value;
+  var inputValue = clean(input.value);
   // We are not defining a function so we need to convert things like f(2) to
   // their numerical value.
   if (inputValue.indexOf(':=') === -1) {
-    while (inputValue.search(/\b[a-z]\([^x]/) !== -1) {
+    while (inputValue.search(/\b[a-z]\((?!x)/) !== -1) {
       inputValue = evaluateFunctionsAtSpecificValues(inputValue);
     }
   }
@@ -128,6 +129,23 @@ function calculate() {
 }
 
 /**
+ * clean - cleans the user input.
+ *
+ * @param  {string} input the raw string from the user.
+ * @return {string}       cleaned input.
+ */
+function clean(input) {
+  input = input.replace(/\s/g, '');
+  input = input.toLowerCase();
+  while (input.search(/[0-9][a-z]/g) !== -1) {
+    var index = input.search(/[0-9][a-z]/g);
+    var beginning = input.substring(0, index + 1);
+    var end = input.substring(index + 1, input.length);
+    input = beginning + '*' + end;
+  }
+  return input;
+}
+/**
  * evaluateFunctionsAtSpecificValues - Replaces all of the x's in a defined
  * function with the number passed and evaluates it. Example: f(x):= 2x
  * f(3) gets changed to (3)2 and evaluated = 6. Does not work when functions
@@ -138,7 +156,11 @@ function calculate() {
  */
 function evaluateFunctionsAtSpecificValues(expression) {
   // Searches for 'f(2' where f is any lettter and 2 is anything except x;
-  var specificFunctionString = expression.match(/\b[a-z]\([^x]/)[0];
+  var functionStrings = expression.match(/\b[a-z]\((?!x)/g);
+  console.log('functionStrings: ', functionStrings);
+  console.log('strings: ', functionStrings);
+  var specificFunctionString = functionStrings[functionStrings.length - 1];
+  console.log("spec func string: ", specificFunctionString);
   // Gets the start of the first function it finds. This probably needs to
   // work backwards in order to support nested functions.
   var specificFunctionStringStart =
@@ -190,7 +212,7 @@ function evaluateFunctionsAtSpecificValues(expression) {
  */
 function replaceFunctions(input) {
   // Look for f(x) where f is any letter.
-  var indexOfFunction = input.search(/[[a-z]\([x]\)/);
+  var indexOfFunction = input.search(/\b[a-z]\([^x]/g);
   // We didn't find any named functions, just return the input.
   if (indexOfFunction === -1) {
     return input;
